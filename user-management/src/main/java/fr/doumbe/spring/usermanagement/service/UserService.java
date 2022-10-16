@@ -31,8 +31,9 @@ public class UserService {
   }
 
   /**
+   *
    * @param username refers to user to find in database
-   * @return
+   * @return username found in database
    */
   @Transactional(readOnly = true)
   public User getUserByUsername(String username) {
@@ -50,8 +51,9 @@ public class UserService {
   }
 
   /**
+   *
    * @param lastname refers to user to find in database
-   * @return
+   * @return lastname found in database
    */
   @Transactional(readOnly = true)
   public User getUserByLastName(String lastname) {
@@ -59,12 +61,20 @@ public class UserService {
   }
   /**
    *
-   * @param username refers to user to find in database
-   * @return
+   * @param id refers to user to find in database
+   * @return user search by id in database
    */
   @Transactional(readOnly = true)
   public Optional<User> findUserById(Long id) {
     return userDAO.findById(id);
   }
 
+  /**
+   *
+   * @param user
+   * @return the user added in database
+   */
+  public User addUser(User user) {
+    return userDAO.save(user);
+  }
 }

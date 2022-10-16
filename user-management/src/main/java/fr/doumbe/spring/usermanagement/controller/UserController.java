@@ -1,21 +1,29 @@
 package fr.doumbe.spring.usermanagement.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import fr.doumbe.spring.usermanagement.entity.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.doumbe.spring.usermanagement.exception.AddUserException;
 import fr.doumbe.spring.usermanagement.exception.SearchUserException;
+import fr.doumbe.spring.usermanagement.rule.UserRule;
 import fr.doumbe.spring.usermanagement.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,14 +35,17 @@ import io.swagger.annotations.ApiOperation;
 public class UserController {
   private final Logger logger = LoggerFactory.getLogger(UserController.class);
   private final UserService userService;
+  private final UserRule userRule;
   /**
    * Constructor
+   *
    * @param userService
-
+   * @param userRule
    */
-  public UserController(UserService userService) {
+  public UserController(UserService userService, UserRule userRule) {
     this.userService = userService;
 
+    this.userRule = userRule;
   }
 
   /**
@@ -77,7 +88,7 @@ public class UserController {
   }
   @ApiOperation(value = "used to find user associated to lastname in database")
   @GetMapping("/search/{lastname}")
-  public ResponseEntity<User> getByLastName(@PathVariable String lastname) {
+  public ResponseEntity<User> getByLastName(@RequestParam String lastname) {
     long time = System.currentTimeMillis();
     logger.info("### starting getUserByLastName ... ###");
     User user = userService.getUserByLastName(lastname);
@@ -115,6 +126,39 @@ public class UserController {
     time = System.currentTimeMillis() - time;
     logger.info("### Ending GetUsersByLastName ..., time : {} ###", time);
     throw new SearchUserException("User not found");
+  }
+
+  /**
+   * used to add user in database
+   * @param user
+   * @return ResponseEntity<> with object containing userId, status, result
+   */
+  @ApiOperation(value = "used to add user in database")
+  @PostMapping(value = "/addUser", consumes = "application/json", produces = "application/json")
+  public ResponseEntity<Object> addUser(@Valid @RequestBody User user) {
+    long time = System.currentTimeMillis();
+    System.out.println(user);
+    logger.info("### starting add user ... ###");
+    if (!userRule.isFrenchCountry(user.getCountry())) {
+      time = System.currentTimeMillis() - time;
+      logger.info("### Ending add user ..., time : {} ###", time);
+      throw new AddUserException("Country Not Allowed");
+    }
+    if (!userRule.isMajor(user.getBirthdate())) {
+      time = System.currentTimeMillis() - time;
+      logger.info("### Ending add user ..., time : {} ###", time);
+      throw new AddUserException("Age lower than 18");
+    }
+    User userSaved = userService.addUser(user);
+
+    Map<String, Object> result = new HashMap<>();
+    result.put("userId", userSaved.getId());
+    result.put("status", HttpStatus.CREATED);
+    result.put("result", "SUCCESS");
+
+    time = System.currentTimeMillis() - time;
+    logger.info("### Ending add user ..., time : {} ###", time);
+    return new ResponseEntity<>(result, HttpStatus.CREATED);
   }
 
 

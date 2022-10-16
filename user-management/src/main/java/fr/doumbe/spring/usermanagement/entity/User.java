@@ -36,6 +36,10 @@ public class User {
   @Column(name = "genre")
   private String genre;
 
+  public Long getId() {
+    return id;
+  }
+
   public void setId(Long id) {
     this.id = id;
   }
@@ -87,8 +91,4 @@ public class User {
   public void setGenre(String genre) {
     this.genre = genre;
   }
-
-  public void setPhoneNumber(String s, long setPhoneNumber) {
-  }
-
 }
