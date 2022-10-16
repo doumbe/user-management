@@ -28,7 +28,7 @@ public class DataInit implements CommandLineRunner {
       User user = new User();
       user.setLastName("TRAORE");
       user.setUsername("Doumbe");
-      user.setBirthdate(LocalDate.of(2020, 3, 17));
+      user.setBirthdate(LocalDate.of(2000, 3, 17));
       user.setCountry("France");
       user.setGenre("M");
       user.setPhoneNumber(+601403322L);
@@ -37,7 +37,7 @@ public class DataInit implements CommandLineRunner {
       User user1 = new User();
       user1.setLastName("ZIDANE");
       user1.setUsername("Zinédine");
-      user1.setBirthdate(LocalDate.of(1990, 3, 17));
+      user1.setBirthdate(LocalDate.of(1991, 6, 10));
       user1.setCountry("France");
       user1.setGenre("M");
       user1.setPhoneNumber(+620301425L);
@@ -47,7 +47,7 @@ public class DataInit implements CommandLineRunner {
       user2.setLastName("ARMAND");
       user2.setUsername("Bruno");
       user2.setBirthdate(LocalDate.of(1990, 3, 17));
-      user2.setCountry("Allemagne");
+      user2.setCountry("France");
       user2.setGenre("M");
       user2.setPhoneNumber(+710101414L);
       userDAO.save(user2);

@@ -13,13 +13,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import fr.doumbe.spring.usermanagement.exception.AddUserException;
 import fr.doumbe.spring.usermanagement.exception.SearchUserException;
@@ -86,14 +89,6 @@ public class UserController {
     User user = userService.getUserByUsername(username);
     return getUserResponseEntity(time, user);
   }
-  @ApiOperation(value = "used to find user associated to lastname in database")
-  @GetMapping("/search/{lastname}")
-  public ResponseEntity<User> getByLastName(@RequestParam String lastname) {
-    long time = System.currentTimeMillis();
-    logger.info("### starting getUserByLastName ... ###");
-    User user = userService.getUserByLastName(lastname);
-    return getUserResponseEntity(time, user);
-  }
 
   private ResponseEntity<User> getUserResponseEntity(long time, User user) {
     if (user != null) {
@@ -105,7 +100,6 @@ public class UserController {
     logger.info("### Ending GetUsersByLastName ..., time : {} ###", time);
     throw new SearchUserException("User not found");
   }
-
 
   /**
    * used to find user associated to username in database
@@ -140,14 +134,16 @@ public class UserController {
     System.out.println(user);
     logger.info("### starting add user ... ###");
     if (!userRule.isFrenchCountry(user.getCountry())) {
-      time = System.currentTimeMillis() - time;
-      logger.info("### Ending add user ..., time : {} ###", time);
-      throw new AddUserException("Country Not Allowed");
+      logger.info("### Pays not Autorized ###");
+      //throw new AddUserException("Country Not Allowed");
+      return new ResponseEntity<>(new AddUserException("Please enter the correct country").getMessage(),
+          HttpStatus.UNAUTHORIZED);
     }
     if (!userRule.isMajor(user.getBirthdate())) {
-      time = System.currentTimeMillis() - time;
-      logger.info("### Ending add user ..., time : {} ###", time);
-      throw new AddUserException("Age lower than 18");
+      logger.info("### Age not Autorized ###");
+      //throw new AddUserException("Age lower than 18");
+      return new ResponseEntity<>(new AddUserException("Please enter the correct age").getMessage(),
+          HttpStatus.UNAUTHORIZED);
     }
     User userSaved = userService.addUser(user);
 
@@ -161,5 +157,14 @@ public class UserController {
     return new ResponseEntity<>(result, HttpStatus.CREATED);
   }
 
+  @ApiOperation(value = "used to delete user by id in database")
+  @DeleteMapping("/{id}")
+  @ResponseStatus(code = HttpStatus.OK)
+  public void deleteById(@PathVariable("id") Long id) {
+    if (userService.findUserById(id).isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+    userService.deleteById(id);
+  }
 
 }

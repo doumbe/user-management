@@ -3,7 +3,7 @@ package fr.doumbe.spring.usermanagement.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
 public class AddUserException extends RuntimeException {
   /**
    * Constructor with message
@@ -11,7 +11,7 @@ public class AddUserException extends RuntimeException {
    * @param message to display
    */
   public AddUserException(String message) {
-    super(message);
+    super("You don't have the rights: " + message);
   }
 
 }

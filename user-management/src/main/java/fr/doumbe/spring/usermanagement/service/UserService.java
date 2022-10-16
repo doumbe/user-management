@@ -77,4 +77,13 @@ public class UserService {
   public User addUser(User user) {
     return userDAO.save(user);
   }
+
+  /**
+   *
+   * @param id
+   * @return delete user in database
+   */
+  public void deleteById(Long id) {
+    userDAO.deleteById(id);
+  }
 }
