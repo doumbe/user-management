@@ -1,9 +1,7 @@
 # user-management
-# user-management
 
 # Projet API Service REST - Doumbe Traore
 
-# A spring boot application for users CRUD
 #Clone the project
 * git clone https://github.com/doumbe/user-management.git
 * open the project with an IDE
