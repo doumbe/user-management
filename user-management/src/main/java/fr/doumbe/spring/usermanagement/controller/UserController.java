@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,6 +72,18 @@ public class UserController {
     long time = System.currentTimeMillis();
     logger.info("### starting getUserByUsername ... ###");
     User user = userService.getUserByUsername(username);
+    return getUserResponseEntity(time, user);
+  }
+  @ApiOperation(value = "used to find user associated to lastname in database")
+  @GetMapping("/search/{lastname}")
+  public ResponseEntity<User> getByLastName(@PathVariable String lastname) {
+    long time = System.currentTimeMillis();
+    logger.info("### starting getUserByLastName ... ###");
+    User user = userService.getUserByLastName(lastname);
+    return getUserResponseEntity(time, user);
+  }
+
+  private ResponseEntity<User> getUserResponseEntity(long time, User user) {
     if (user != null) {
       time = System.currentTimeMillis() - time;
       logger.info("### Ending GetUsersByLastName ..., time : {} ###", time);

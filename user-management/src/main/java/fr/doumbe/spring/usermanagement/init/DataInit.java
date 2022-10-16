@@ -47,7 +47,7 @@ public class DataInit implements CommandLineRunner {
       user2.setLastName("ARMAND");
       user2.setUsername("Bruno");
       user2.setBirthdate(LocalDate.of(1990, 3, 17));
-      user2.setCountry("France");
+      user2.setCountry("Allemagne");
       user2.setGenre("M");
       user2.setPhoneNumber(+710101414L);
       userDAO.save(user2);

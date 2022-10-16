@@ -30,7 +30,6 @@ public class UserService {
   }
 
   /**
-   *
    * @param username refers to user to find in database
    * @return
    */
@@ -47,6 +46,15 @@ public class UserService {
     result.put("Total_of_elements", userPage.getTotalElements());
     result.put("Current_page", userPage.getNumber());
     return result;
+  }
+
+  /**
+   * @param lastname refers to user to find in database
+   * @return
+   */
+  @Transactional(readOnly = true)
+  public User getUserByLastName(String lastname) {
+    return userDAO.findByLastName(lastname);
   }
 
 }
