@@ -7,5 +7,6 @@ import fr.doumbe.spring.usermanagement.entity.User;
 
 @Repository
 public interface UserDAO extends JpaRepository<User, Long> {
-
+  User findByUsername(String username);
 }
+

@@ -28,6 +28,16 @@ public class UserService {
   public List<User> getAllUser() {
     return userDAO.findAll();
   }
+
+  /**
+   *
+   * @param username refers to user to find in database
+   * @return
+   */
+  @Transactional(readOnly = true)
+  public User getUserByUsername(String username) {
+    return userDAO.findByUsername(username);
+  }
   public Map<String, Object> getUserByPage(int page, int size) {
     Map<String, Object> result = new HashMap<>();
     PageRequest pageable = PageRequest.of(page, size);

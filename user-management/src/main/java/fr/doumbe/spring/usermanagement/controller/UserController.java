@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.doumbe.spring.usermanagement.exception.SearchUserException;
 import fr.doumbe.spring.usermanagement.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,17 +25,15 @@ import io.swagger.annotations.ApiOperation;
 public class UserController {
   private final Logger logger = LoggerFactory.getLogger(UserController.class);
   private final UserService userService;
-
-  public UserController(UserService userService) {
-    this.userService = userService;
-  }
-
   /**
    * Constructor
-   *
    * @param userService
-   */
 
+   */
+  public UserController(UserService userService) {
+    this.userService = userService;
+
+  }
 
   /**
    * used to find all users in database
@@ -59,6 +58,27 @@ public class UserController {
     time = System.currentTimeMillis() - time;
     logger.info("### Ending GetUsersByLastName ..., time : {} ###", time);
     return result;
+  }
+
+  /**
+   * used to find user associated to username in database
+   * @param username refers to the name of the user to find
+   * @return ResponseEntity<User>
+   */
+  @ApiOperation(value = "used to find user associated to username in database")
+  @GetMapping("/search")
+  public ResponseEntity<User> getUser(@RequestParam("username") String username) {
+    long time = System.currentTimeMillis();
+    logger.info("### starting getUserByUsername ... ###");
+    User user = userService.getUserByUsername(username);
+    if (user != null) {
+      time = System.currentTimeMillis() - time;
+      logger.info("### Ending GetUsersByLastName ..., time : {} ###", time);
+      return ResponseEntity.ok().body(user);
+    }
+    time = System.currentTimeMillis() - time;
+    logger.info("### Ending GetUsersByLastName ..., time : {} ###", time);
+    throw new SearchUserException("User not found");
   }
 
 }
