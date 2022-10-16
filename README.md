@@ -5,7 +5,7 @@ A spring boot application for users CRUD
 
 git clone https://github.com/doumbe/user-management.git
 open the project with an IDE
-java jdk-13.0.2
+java jdk-17.0.4
 maven maven-4.0.0
 #Lunch the project
 
