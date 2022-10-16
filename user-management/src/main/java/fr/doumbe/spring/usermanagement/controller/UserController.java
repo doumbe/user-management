@@ -2,6 +2,7 @@ package fr.doumbe.spring.usermanagement.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import fr.doumbe.spring.usermanagement.entity.User;
 
@@ -93,5 +94,28 @@ public class UserController {
     logger.info("### Ending GetUsersByLastName ..., time : {} ###", time);
     throw new SearchUserException("User not found");
   }
+
+
+  /**
+   * used to find user associated to username in database
+   * @param id refers to the name of the user to find
+   * @return ResponseEntity<User>
+   */
+  @ApiOperation(value = "used to find user id associated to username in database")
+  @GetMapping("/{id}")
+  public ResponseEntity<Optional<User>> getUserById(@PathVariable("id") Long id) {
+    long time = System.currentTimeMillis();
+    logger.info("### starting getUserByUsername ... ###");
+    Optional<User> user = userService.findUserById(id);
+    if (user.isPresent()) {
+      time = System.currentTimeMillis() - time;
+      logger.info("### Ending GetUsersByLastName ..., time : {} ###", time);
+      return ResponseEntity.ok().body(user);
+    }
+    time = System.currentTimeMillis() - time;
+    logger.info("### Ending GetUsersByLastName ..., time : {} ###", time);
+    throw new SearchUserException("User not found");
+  }
+
 
 }

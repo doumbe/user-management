@@ -3,6 +3,7 @@ package fr.doumbe.spring.usermanagement.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import fr.doumbe.spring.usermanagement.dao.UserDAO;
 import fr.doumbe.spring.usermanagement.entity.User;
@@ -55,6 +56,15 @@ public class UserService {
   @Transactional(readOnly = true)
   public User getUserByLastName(String lastname) {
     return userDAO.findByLastName(lastname);
+  }
+  /**
+   *
+   * @param username refers to user to find in database
+   * @return
+   */
+  @Transactional(readOnly = true)
+  public Optional<User> findUserById(Long id) {
+    return userDAO.findById(id);
   }
 
 }
